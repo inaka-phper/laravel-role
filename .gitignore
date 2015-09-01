@@ -1,0 +1,30 @@
+# IDE and editor specific files #
+#################################
+.idea
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# project add files #
+#####################
+.vagrant
+
+
+# Laravel add files #
+##########################
+/vendor
+/node_modules
+.env
+
+/bootstrap/compiled.php
+.env.*.php
+.env.php
+.env
