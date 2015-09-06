@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Post;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -9,6 +10,20 @@ use App\Http\Controllers\Controller;
 
 class PostController extends Controller
 {
+    /**
+     * Post EloquentModel
+     * @var Post
+     */
+    private $post;
+
+    /**
+     * @param Post $post
+     */
+    public function __construct(Post $post)
+    {
+        $this->post = $post;
+    }
+
     /**
      * Display a listing of the resource.
      *
