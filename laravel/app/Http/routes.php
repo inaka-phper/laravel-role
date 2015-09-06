@@ -15,11 +15,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//”FØ‚Ì’è‹`
+//ï¿½Fï¿½Ø‚Ì’ï¿½`
 Route::get('auth/login', 'Auth\AuthController@getLogin');
 Route::post('auth/login', 'Auth\AuthController@postLogin');
 Route::get('auth/logout', 'Auth\AuthController@getLogout');
 
-// “o˜^‚Ìƒ‹[ƒg’è‹`c
+// ï¿½oï¿½^ï¿½Ìƒï¿½ï¿½[ï¿½gï¿½ï¿½`ï¿½c
 Route::get('auth/register', 'Auth\AuthController@getRegister');
 Route::post('auth/register', 'Auth\AuthController@postRegister');
+
+Route::resource('post', 'PostController');
