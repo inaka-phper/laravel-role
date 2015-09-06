@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+    /**
+     * ユーザー認証情報
+     * @var Auth
+     */
+    private $user;
+
     /**
      * Post EloquentModel
      * @var Post
@@ -22,6 +29,7 @@ class PostController extends Controller
     public function __construct(Post $post)
     {
         $this->post = $post;
+        $this->user = Auth::user();
     }
 
     /**
@@ -31,7 +39,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = $this->post->paginate();
+
+        return view('post.index', ['posts' => $posts]);
     }
 
     /**
@@ -41,7 +51,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('post.create');
     }
 
     /**
@@ -52,7 +62,11 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->post->fill($request->all());
+        $this->post->user_id = $this->user->id;
+        $this->post->save();
+
+        return redirect('/post')->with('message', '投稿を保存しました。');
     }
 
     /**
@@ -63,7 +77,9 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = $this->post->findOrFail($id);
+
+        return view('post.show', ['post' => $post]);
     }
 
     /**
@@ -74,7 +90,9 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = $this->post->findOrFail($id);
+
+        return view('post.edit', ['post' => $post]);
     }
 
     /**
@@ -86,7 +104,11 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->post = $this->post->findOrFail($id);
+        $this->post->fill($request->all());
+        $this->post->save();
+
+        return redirect('/post/' . $this->post->id)->with('message', '投稿を編集しました。');
     }
 
     /**
@@ -97,6 +119,8 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->post->destroy($id);
+
+        return redirect('/post')->with('message', '投稿を削除しました。');
     }
 }
