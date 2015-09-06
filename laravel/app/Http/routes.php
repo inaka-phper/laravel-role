@@ -25,3 +25,4 @@ Route::get('auth/register', 'Auth\AuthController@getRegister');
 Route::post('auth/register', 'Auth\AuthController@postRegister');
 
 Route::resource('post', 'PostController');
+Route::resource('post.comment', 'PostCommentController');
