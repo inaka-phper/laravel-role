@@ -33,12 +33,16 @@
                                 <a href="/post/{{ $post->id }}" class="btn btn-default">
                                     <span class="glyphicon glyphicon-search" aria-hidden="true"></span> 表示
                                 </a>
+                                @can('update', $post)
                                 <a href="/post/{{ $post->id }}/edit" class="btn btn-primary">
                                     <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 編集
                                 </a>
+                                @endcan
+                                @can('delete', $post)
                                 <button class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-whatever="/post/{{ $post->id }}">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 削除
                                 </button>
+                                @endcan
                             </td>
                         </tr>
                     @empty
