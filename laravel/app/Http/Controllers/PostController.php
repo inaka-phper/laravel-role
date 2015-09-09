@@ -77,9 +77,9 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = $this->post->findOrFail($id);
+        $this->post = $this->post->findOrFail($id);
 
-        return view('post.show', ['post' => $post]);
+        return view('post.show', ['post' => $this->post]);
     }
 
     /**
@@ -90,9 +90,9 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        $post = $this->post->findOrFail($id);
+        $this->post = $this->post->findOrFail($id);
 
-        return view('post.edit', ['post' => $post]);
+        return view('post.edit', ['post' => $this->post]);
     }
 
     /**
