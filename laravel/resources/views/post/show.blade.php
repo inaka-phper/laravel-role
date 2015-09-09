@@ -14,12 +14,16 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <p>{!! nl2br(e($post->content)) !!}</p>
+                        @can('update', $post)
                         <a href="/post/{{ $post->id }}/edit" class="btn btn-primary">
                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 編集
                         </a>
+                        @endcan
+                        @can('delete', $post)
                         <button class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-whatever="/post/{{ $post->id }}">
                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 削除
                         </button>
+                        @endcan
                     </div>
                 </div>
             </div>
