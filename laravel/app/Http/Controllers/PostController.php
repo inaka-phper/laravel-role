@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -51,6 +52,9 @@ class PostController extends Controller
      */
     public function create()
     {
+        if (Gate::denies('create', $this->post)) {
+            return redirect('/auth/login')->with('message', '投稿するにはログインしてください。');
+        }
         return view('post.create');
     }
 
@@ -62,6 +66,10 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        if (Gate::denies('create', $this->post)) {
+            return redirect('/auth/login')->with('message', '投稿するにはログインしてください。');
+        }
+
         $this->post->fill($request->all());
         $this->post->user_id = $this->user->id;
         $this->post->save();
@@ -92,6 +100,10 @@ class PostController extends Controller
     {
         $this->post = $this->post->findOrFail($id);
 
+        if (Gate::denies('update', $this->post)) {
+            return redirect('/post')->with('message', '編集できるのは投稿者と管理者のみです。');
+        }
+
         return view('post.edit', ['post' => $this->post]);
     }
 
@@ -105,6 +117,11 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         $this->post = $this->post->findOrFail($id);
+
+        if (Gate::denies('update', $this->post)) {
+            return redirect('/post')->with('message', '編集できるのは投稿者と管理者のみです。');
+        }
+
         $this->post->fill($request->all());
         $this->post->save();
 
@@ -119,7 +136,13 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        $this->post->destroy($id);
+        $this->post = $this->post->findOrFail($id);
+
+        if (Gate::denies('delete', $this->post)) {
+            return redirect('/post')->with('message', '削除できるのは投稿者と管理者のみです。');
+        }
+
+        $this->post->delete();
 
         return redirect('/post')->with('message', '投稿を削除しました。');
     }
