@@ -36,22 +36,26 @@
         </div>
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                <form class="form-horizontal" role="form" method="POST" action="{{ url('/post/' . $post->id . '/comment') }}">
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="_method" value="POST">
+                @can('create', $post)
+                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/post/' . $post->id . '/comment') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="_method" value="POST">
 
-                    <div class="form-group">
-                        <div class="col-md-5">
-                            <textarea name="content" class="form-control">{{ old('content') }}</textarea>
+                        <div class="form-group">
+                            <div class="col-md-5">
+                                <textarea name="content" class="form-control">{{ old('content') }}</textarea>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary">
+                                    投稿
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary">
-                                投稿
-                            </button>
-                        </div>
-                    </div>
 
-                </form>
+                    </form>
+                @else
+                    <p>コメントを投稿するには <a href="/auth/login">ログイン</a>してください。</p>
+                @endcan
             </div>
         </div>
 
@@ -62,12 +66,16 @@
                         <div class="panel-body">
                             <p>{{ $comment->id }}. {{ $comment->user->name }} {{ $comment->created_at->toDateString() }}</p>
                             <p>{!! nl2br(e($comment->content)) !!}</p>
-                            <a href="/post/{{ $post->id }}/comment/{{ $comment->id }}/edit" class="btn btn-primary">
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 編集
-                            </a>
-                            <button class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-whatever="/post/{{ $post->id }}/comment/{{ $comment->id }}">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 削除
-                            </button>
+                            @can('update', $comment)
+                                <a href="/post/{{ $post->id }}/comment/{{ $comment->id }}/edit" class="btn btn-primary">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 編集
+                                </a>
+                            @endcan
+                            @can('delete', [$comment, $post])
+                                <button class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-whatever="/post/{{ $post->id }}/comment/{{ $comment->id }}">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 削除
+                                </button>
+                            @endcan
                         </div>
                     </div>
                 </div>

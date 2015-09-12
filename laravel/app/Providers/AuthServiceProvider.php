@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Comment;
+use App\Policies\CommentPolicy;
 use App\Policies\PostPolicy;
 use App\Post;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
         Post::class => PostPolicy::class,
+        Comment::class => CommentPolicy::class,
     ];
 
     /**
