@@ -10,6 +10,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PostCommentController extends Controller
 {
@@ -71,6 +72,10 @@ class PostCommentController extends Controller
      */
     public function store(Request $request)
     {
+        if (Gate::denies('create', $this->comment)) {
+            return redirect('/auth/login')->with('message', 'コメントするにはログインしてください。');
+        }
+
         $this->comment->fill($request->all());
         $this->comment->user_id = $this->user->id;
         $this->comment->post_id = $this->post->id;
@@ -99,9 +104,13 @@ class PostCommentController extends Controller
     public function edit(Route $route)
     {
         $id = $route->parameter('comment');
-        $comment = $this->comment->findOrFail($id);
+        $this->comment = $this->comment->findOrFail($id);
 
-        return view('post.comment.edit', ['comment' => $comment]);
+        if (Gate::denies('update', $this->comment)) {
+            return redirect('/post/' . $this->post->id)->with('message', '編集できるのは投稿者と管理者のみです。');
+        }
+
+        return view('post.comment.edit', ['comment' => $this->comment]);
         //
     }
 
@@ -116,6 +125,11 @@ class PostCommentController extends Controller
     {
         $id = $route->parameter('comment');
         $this->comment = $this->comment->findOrFail($id);
+
+        if (Gate::denies('update', $this->comment)) {
+            return redirect('/post/' . $this->post->id)->with('message', '編集できるのは投稿者と管理者のみです。');
+        }
+
         $this->comment->fill($request->all());
         $this->comment->save();
 
@@ -131,7 +145,13 @@ class PostCommentController extends Controller
     public function destroy(Route $route)
     {
         $id = $route->parameter('comment');
-        $this->comment->destroy($id);
+        $this->comment = $this->comment->findOrFail($id);
+
+        if (Gate::denies('delete', [$this->comment, $this->post])) {
+            return redirect('/post/' . $this->post->id)->with('message', '削除できるのは投稿者と記事の投稿者、管理者のみです。');
+        }
+
+        $this->comment->delete();
 
         return redirect('/post/' . $this->post->id)->with('message', 'コメントを削除しました。');
     }
