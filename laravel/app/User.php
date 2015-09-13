@@ -52,4 +52,13 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasMany('App\Comment');
     }
+
+    /**
+     * 管理者権限の有無をtrue/falseで取得
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->admin == 1;
+    }
 }
